@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/utils/supabase/server";
+import AuthButton from "@/components/AuthButton";
 
 export default async function Index() {
   const supabase = createClient();
@@ -33,7 +34,7 @@ export default async function Index() {
             <a href="#" className="text-sm font-semibold leading-6 text-gray-900">Company</a>
           </div>
           <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-            <a href="#" className="text-sm font-semibold leading-6 text-gray-900">Log in <span aria-hidden="true">&rarr;</span></a>
+            <AuthButton />
           </div>
         </nav>
       </header>
@@ -52,7 +53,15 @@ export default async function Index() {
             <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">Data to enrich your online business</h1>
             <p className="mt-6 text-lg leading-8 text-gray-600">Anim aute id magna aliqua ad ad non deserunt sunt. Qui irure qui lorem cupidatat commodo. Elit sunt amet fugiat veniam occaecat fugiat aliqua.</p>
             <div className="mt-10 flex items-center justify-center gap-x-6">
-              <Button>Get started</Button>
+              {user ? (
+                <Button asChild>
+                  <a href="/protected">Go to Dashboard</a>
+                </Button>
+              ) : (
+                <Button asChild>
+                  <a href="/login">Get started</a>
+                </Button>
+              )}
               <a href="#" className="text-sm font-semibold leading-6 text-gray-900">Learn more <span aria-hidden="true">→</span></a>
             </div>
           </div>
