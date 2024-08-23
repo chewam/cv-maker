@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { Database } from "@/types/database.types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-export default async function ProtectedPage() {
+export default async function DashboardPage() {
   const supabase = createClient();
 
   const {
@@ -44,7 +44,9 @@ export default async function ProtectedPage() {
       <div className="animate-in flex-1 flex flex-col w-full px-3 py-16">
         <div className="flex-1 flex flex-col max-w-7xl mx-auto w-full">
           <main className="flex-1 flex flex-col gap-6">
-            <h1 className="text-4xl font-bold">Protected Page</h1>
+            <h1 className="text-4xl font-bold">Dashboard</h1>
+
+            <h2 className="text-2xl font-semibold mt-6 mb-4">Your Applications</h2>
 
             {applications && applications.length > 0 ? (
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">

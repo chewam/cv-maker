@@ -55,7 +55,7 @@ export default async function Index() {
             <div className="mt-10 flex items-center justify-center gap-x-6">
               {user ? (
                 <Button asChild>
-                  <a href="/protected">Go to Dashboard</a>
+                  <a href="/dashboard">Go to Dashboard</a>
                 </Button>
               ) : (
                 <Button asChild>
