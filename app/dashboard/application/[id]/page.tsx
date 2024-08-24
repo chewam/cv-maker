@@ -71,7 +71,9 @@ export default async function ApplicationPage({
                 defaultValue={application.description}
               />
             </div>
-            <Button type="submit">Update Application</Button>
+            <Button size="sm" type="submit">
+              Update Application
+            </Button>
           </form>
         </CardContent>
       </Card>

@@ -89,6 +89,7 @@ const ExperienceManager: React.FC<{ profileId: number }> = ({ profileId }) => {
     <Popover>
       <PopoverTrigger asChild>
         <Button
+          size="sm"
           id={name}
           name={name}
           variant={"outline"}
@@ -183,8 +184,10 @@ const ExperienceManager: React.FC<{ profileId: number }> = ({ profileId }) => {
             name="end_date"
           />
         </div>
-        <Button onClick={() => onSave(formData)}>Save</Button>
-        <Button onClick={onCancel} variant="outline">
+        <Button size="sm" onClick={() => onSave(formData)}>
+          Save
+        </Button>
+        <Button size="sm" onClick={onCancel} variant="outline">
           Cancel
         </Button>
       </div>
@@ -218,10 +221,14 @@ const ExperienceManager: React.FC<{ profileId: number }> = ({ profileId }) => {
                       ? format(new Date(experience.end_date), "PPP")
                       : "Present"}
                   </p>
-                  <Button onClick={() => setEditingExperience(experience)}>
+                  <Button
+                    size="sm"
+                    onClick={() => setEditingExperience(experience)}
+                  >
                     Edit
                   </Button>
                   <Button
+                    size="sm"
                     onClick={() => handleDelete(experience.id)}
                     variant="destructive"
                   >
@@ -238,7 +245,9 @@ const ExperienceManager: React.FC<{ profileId: number }> = ({ profileId }) => {
               onCancel={() => setIsAdding(false)}
             />
           ) : (
-            <Button onClick={() => setIsAdding(true)}>Add Experience</Button>
+            <Button size="sm" onClick={() => setIsAdding(true)}>
+              Add Experience
+            </Button>
           )}
         </div>
       </CardContent>

@@ -95,8 +95,10 @@ const LinkManager: React.FC<{ profileId: number }> = ({ profileId }) => {
           onChange={handleChange}
           placeholder="Description (e.g., LinkedIn, GitHub)"
         />
-        <Button onClick={() => onSave(formData)}>Save</Button>
-        <Button onClick={onCancel} variant="outline">
+        <Button size="sm" onClick={() => onSave(formData)}>
+          Save
+        </Button>
+        <Button size="sm" onClick={onCancel} variant="outline">
           Cancel
         </Button>
       </div>
@@ -122,8 +124,11 @@ const LinkManager: React.FC<{ profileId: number }> = ({ profileId }) => {
                 <>
                   <h3 className="font-bold">{link.description}</h3>
                   <p>{link.url}</p>
-                  <Button onClick={() => setEditingLink(link)}>Edit</Button>
+                  <Button size="sm" onClick={() => setEditingLink(link)}>
+                    Edit
+                  </Button>
                   <Button
+                    size="sm"
                     onClick={() => handleDelete(link.id)}
                     variant="destructive"
                   >
@@ -140,7 +145,9 @@ const LinkManager: React.FC<{ profileId: number }> = ({ profileId }) => {
               onCancel={() => setIsAdding(false)}
             />
           ) : (
-            <Button onClick={() => setIsAdding(true)}>Add Link</Button>
+            <Button size="sm" onClick={() => setIsAdding(true)}>
+              Add Link
+            </Button>
           )}
         </div>
       </CardContent>

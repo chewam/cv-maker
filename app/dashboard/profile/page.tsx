@@ -84,7 +84,9 @@ export default async function ProfilePage() {
                 defaultValue={profile?.lastname || ""}
               />
             </div>
-            <Button type="submit">Update Profile</Button>
+            <Button size="sm" type="submit">
+              Update Profile
+            </Button>
           </form>
         </CardContent>
       </Card>
