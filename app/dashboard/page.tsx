@@ -1,24 +1,24 @@
-import { createClient } from "@/utils/supabase/server";
-import { redirect } from "next/navigation";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { createClient } from "@/utils/supabase/server"
+import { redirect } from "next/navigation"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
 export default async function DashboardPage() {
-  const supabase = createClient();
+  const supabase = createClient()
 
   const {
     data: { user },
-  } = await supabase.auth.getUser();
+  } = await supabase.auth.getUser()
 
   if (!user) {
-    return redirect("/login");
+    return redirect("/login")
   }
 
   const { data: applications, error } = await supabase
     .from("applications")
-    .select("*");
+    .select("*")
 
   if (error) {
-    console.error("Error fetching applications:", error);
+    console.error("Error fetching applications:", error)
   }
 
   return (
@@ -45,5 +45,5 @@ export default async function DashboardPage() {
         <p>No applications found.</p>
       )}
     </div>
-  );
+  )
 }

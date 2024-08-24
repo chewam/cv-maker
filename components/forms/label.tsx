@@ -1,5 +1,5 @@
-import { cn } from "@/utils/cn";
-import React from "react";
+import { cn } from "@/utils/cn"
+import React from "react"
 
 export function Label({
   children,
@@ -9,5 +9,5 @@ export function Label({
     <label className={cn("text-sm font-medium", props.className)} {...props}>
       {children}
     </label>
-  );
+  )
 }

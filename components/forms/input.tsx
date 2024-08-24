@@ -1,4 +1,4 @@
-import { cn } from "@/utils/cn";
+import { cn } from "@/utils/cn"
 
 export function Input({ ...props }: React.JSX.IntrinsicElements["input"]) {
   return (
@@ -9,5 +9,5 @@ export function Input({ ...props }: React.JSX.IntrinsicElements["input"]) {
       )}
       {...props}
     />
-  );
+  )
 }

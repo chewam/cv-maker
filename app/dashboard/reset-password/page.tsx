@@ -1,28 +1,28 @@
-import { FormMessage, Message } from "@/components/forms/form-message";
-import { Input } from "@/components/forms/input";
-import { Label } from "@/components/forms/label";
-import { SubmitButton } from "@/components/forms/submit-button";
-import { createClient } from "@/utils/supabase/server";
-import { encodedRedirect } from "@/utils/utils";
+import { FormMessage, Message } from "@/components/forms/form-message"
+import { Input } from "@/components/forms/input"
+import { Label } from "@/components/forms/label"
+import { SubmitButton } from "@/components/forms/submit-button"
+import { createClient } from "@/utils/supabase/server"
+import { encodedRedirect } from "@/utils/utils"
 
 export default async function ResetPassword({
   searchParams,
 }: {
-  searchParams: Message;
+  searchParams: Message
 }) {
   const resetPassword = async (formData: FormData) => {
-    "use server";
-    const supabase = createClient();
+    "use server"
+    const supabase = createClient()
 
-    const password = formData.get("password") as string;
-    const confirmPassword = formData.get("confirmPassword") as string;
+    const password = formData.get("password") as string
+    const confirmPassword = formData.get("confirmPassword") as string
 
     if (!password || !confirmPassword) {
       encodedRedirect(
         "error",
         "/dashboard/reset-password",
         "Password and confirm password are required",
-      );
+      )
     }
 
     if (password !== confirmPassword) {
@@ -30,23 +30,23 @@ export default async function ResetPassword({
         "error",
         "/dashboard/reset-password",
         "Passwords do not match",
-      );
+      )
     }
 
     const { error } = await supabase.auth.updateUser({
       password: password,
-    });
+    })
 
     if (error) {
       encodedRedirect(
         "error",
         "/dashboard/reset-password",
         "Password update failed",
-      );
+      )
     }
 
-    encodedRedirect("success", "/dashboard/reset-password", "Password updated");
-  };
+    encodedRedirect("success", "/dashboard/reset-password", "Password updated")
+  }
 
   return (
     <div className="flex-1 flex flex-col items-center justify-center w-full">
@@ -74,5 +74,5 @@ export default async function ResetPassword({
         <FormMessage message={searchParams} />
       </form>
     </div>
-  );
+  )
 }

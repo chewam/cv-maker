@@ -1,56 +1,64 @@
-import Link from "next/link";
-import { createClient } from "@/utils/supabase/server";
-import { redirect } from "next/navigation";
-import { SubmitButton } from "../../components/forms/submit-button";
-import { Label } from "@/components/forms/label";
-import { Input } from "@/components/forms/input";
-import { FormMessage, Message } from "@/components/forms/form-message";
-import { headers } from "next/headers";
-import { encodedRedirect } from "@/utils/utils";
+import Link from "next/link"
+import { createClient } from "@/utils/supabase/server"
+import { redirect } from "next/navigation"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/forms/label"
+import { FormMessage, Message } from "@/components/forms/form-message"
+import { headers } from "next/headers"
+import { encodedRedirect } from "@/utils/utils"
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+  CardFooter,
+} from "@/components/ui/card"
 
 export default function ForgotPassword({
   searchParams,
 }: {
-  searchParams: Message;
+  searchParams: Message
 }) {
   const forgotPassword = async (formData: FormData) => {
-    "use server";
+    "use server"
 
-    const email = formData.get("email")?.toString();
-    const supabase = createClient();
-    const origin = headers().get("origin");
-    const callbackUrl = formData.get("callbackUrl")?.toString();
+    const email = formData.get("email")?.toString()
+    const supabase = createClient()
+    const origin = headers().get("origin")
+    const callbackUrl = formData.get("callbackUrl")?.toString()
 
     if (!email) {
-      return encodedRedirect("error", "/forgot-password", "Email is required");
+      return encodedRedirect("error", "/forgot-password", "Email is required")
     }
 
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
       redirectTo: `${origin}/auth/callback?redirect_to=/dashboard/reset-password`,
-    });
+    })
 
     if (error) {
-      console.error(error.message);
+      console.error(error.message)
       return encodedRedirect(
         "error",
         "/forgot-password",
         "Could not reset password",
-      );
+      )
     }
 
     if (callbackUrl) {
-      return redirect(callbackUrl);
+      return redirect(callbackUrl)
     }
 
     return encodedRedirect(
       "success",
       "/forgot-password",
       "Check your email for a link to reset your password.",
-    );
-  };
+    )
+  }
 
   return (
-    <div className="flex flex-col flex-1 p-4 w-full items-center">
+    <div className="flex flex-col flex-1 w-full items-center">
       <Link
         href="/"
         className="absolute left-8 top-8 py-2 px-4 rounded-md no-underline text-foreground bg-btn-background hover:bg-btn-background-hover flex items-center group text-sm"
@@ -72,23 +80,39 @@ export default function ForgotPassword({
         Back
       </Link>
 
-      <form className="flex-1 flex flex-col w-full justify-center gap-2 text-foreground [&>input]:mb-6 max-w-md p-4">
-        <h1 className="text-2xl font-medium">Reset Password</h1>
-        <p className="text-sm text-foreground/60">
-          Already have an account?{" "}
-          <Link className="text-blue-600 font-medium underline" href="/login">
-            Log in
-          </Link>
-        </p>
-        <div className="flex flex-col gap-2 [&>input]:mb-3 mt-8">
-          <Label htmlFor="email">Email</Label>
-          <Input name="email" placeholder="you@example.com" required />
-          <SubmitButton formAction={forgotPassword}>
-            Reset Password
-          </SubmitButton>
+      <Card className="w-full max-w-md mt-20">
+        <CardHeader>
+          <CardTitle>Reset Password</CardTitle>
+          <CardDescription>
+            Already have an account?{" "}
+            <Link
+              className="text-blue-600 font-medium hover:underline"
+              href="/login"
+            >
+              Log in
+            </Link>
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form action={forgotPassword} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                name="email"
+                placeholder="you@example.com"
+                required
+              />
+            </div>
+            <Button type="submit" className="w-full">
+              Reset Password
+            </Button>
+          </form>
+        </CardContent>
+        <CardFooter>
           <FormMessage message={searchParams} />
-        </div>
-      </form>
+        </CardFooter>
+      </Card>
     </div>
-  );
+  )
 }
