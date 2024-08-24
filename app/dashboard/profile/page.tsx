@@ -3,8 +3,8 @@ import { redirect } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import ExperienceManager from "@/components/ExperienceManager"
-import LinkManager from "@/components/LinkManager"
+import ExperienceManager from "@/components/experience-manager"
+import LinkManager from "@/components/link-manager"
 
 export default async function ProfilePage() {
   const supabase = createClient()

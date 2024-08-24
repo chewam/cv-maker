@@ -1,6 +1,6 @@
 import { GeistSans } from "geist/font/sans"
 import "./globals.css"
-import BackgroundEffect from "@/components/BackgroundEffect"
+import BackgroundEffect from "@/components/background-effect"
 import { Analytics } from "@vercel/analytics/react"
 import Header from "@/components/header"
 import Footer from "@/components/footer"
