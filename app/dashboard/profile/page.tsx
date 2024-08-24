@@ -15,6 +15,16 @@ export default async function ProfilePage() {
     return redirect("/login")
   }
 
+  const { data: profile, error } = await supabase
+    .from("profiles")
+    .select("*")
+    .eq("owner", user.id)
+    .single()
+
+  if (error) {
+    console.error("Error fetching applications:", error)
+  }
+
   return (
     <main className="space-y-6">
       <h1 className="text-3xl font-bold">Profile</h1>
@@ -44,13 +54,27 @@ export default async function ProfilePage() {
                 htmlFor="name"
                 className="block text-sm font-medium text-gray-700"
               >
-                Name
+                Firstname
               </label>
               <Input
                 type="text"
                 id="name"
                 name="name"
-                defaultValue={user.user_metadata?.full_name || ""}
+                defaultValue={profile?.firstname || ""}
+              />
+            </div>
+            <div>
+              <label
+                htmlFor="name"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Lastname
+              </label>
+              <Input
+                type="text"
+                id="name"
+                name="name"
+                defaultValue={profile?.lastname || ""}
               />
             </div>
             <Button type="submit">Update Profile</Button>

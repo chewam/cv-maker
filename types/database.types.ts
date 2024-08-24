@@ -44,6 +44,85 @@ export type Database = {
           },
         ]
       }
+      experiences: {
+        Row: {
+          company: string
+          created_at: string
+          end_date: string | null
+          id: number
+          location: string
+          profile: number
+          role: string
+          start_date: string
+          updated_at: string | null
+        }
+        Insert: {
+          company: string
+          created_at?: string
+          end_date?: string | null
+          id?: number
+          location: string
+          profile: number
+          role: string
+          start_date: string
+          updated_at?: string | null
+        }
+        Update: {
+          company?: string
+          created_at?: string
+          end_date?: string | null
+          id?: number
+          location?: string
+          profile?: number
+          role?: string
+          start_date?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "experiences_profile_fkey"
+            columns: ["profile"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          firstname: string | null
+          id: number
+          lastname: string | null
+          owner: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string
+          firstname?: string | null
+          id?: number
+          lastname?: string | null
+          owner: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string
+          firstname?: string | null
+          id?: number
+          lastname?: string | null
+          owner?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "profiles_owner_fkey"
+            columns: ["owner"]
+            isOneToOne: true
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never

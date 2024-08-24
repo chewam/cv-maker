@@ -15,7 +15,7 @@ export default async function Header() {
         className="flex items-center justify-between p-6 lg:px-8"
         aria-label="Global"
       >
-        <div className="flex flex-col lg:flex-1">
+        <div className="flex flex-col">
           <Logo />
         </div>
         <div className="flex lg:hidden">

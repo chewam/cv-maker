@@ -22,7 +22,7 @@ export default async function AuthButton() {
     <div className="flex items-center gap-4">
       {user.email}
       <form action={signOut}>
-        <Button>Logout</Button>
+        <Button variant="destructive">Logout</Button>
       </form>
     </div>
   ) : (
