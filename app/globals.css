@@ -66,4 +66,35 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  /* logo styles */
+
+  .logo-container {
+    position: relative;
+    width: 67px; /* Ajustez en fonction de vos besoins */
+    height: 51px; /* Ajustez en fonction de vos besoins */
+  }
+
+  .logo-star {
+    position: absolute;
+    top: 0;
+    left: 0;
+    animation: logo-float 2s infinite ease-in-out;
+  }
+
+  .logo-smallStar {
+    position: absolute;
+    top: 25px;
+    left: 40px;
+    animation: logo-float 3s infinite ease-in-out alternate;
+  }
+
+  @keyframes logo-float {
+    0%, 100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.1);
+    }
+  }
 }

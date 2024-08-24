@@ -22,7 +22,7 @@ export default async function DashboardPage() {
   }
 
   return (
-    <div className="animate-in flex-1 flex flex-col gap-6">
+    <main className="animate-in flex-1 flex flex-col gap-6">
       <h1 className="text-3xl font-bold">Dashboard</h1>
       <h2 className="text-xl font-semibold">Your Applications</h2>
       {applications && applications.length > 0 ? (
@@ -44,6 +44,6 @@ export default async function DashboardPage() {
       ) : (
         <p>No applications found.</p>
       )}
-    </div>
+    </main>
   )
 }

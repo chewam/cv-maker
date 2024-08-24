@@ -16,7 +16,7 @@ export default async function ProfilePage() {
   }
 
   return (
-    <div className="space-y-6">
+    <main className="space-y-6">
       <h1 className="text-3xl font-bold">Profile</h1>
       <Card>
         <CardHeader>
@@ -57,6 +57,6 @@ export default async function ProfilePage() {
           </form>
         </CardContent>
       </Card>
-    </div>
+    </main>
   )
 }

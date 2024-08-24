@@ -36,7 +36,7 @@ export default async function ApplicationPage({
   }
 
   return (
-    <div className="space-y-6">
+    <main className="space-y-6">
       <h1 className="text-3xl font-bold">Edit Application</h1>
       <Card>
         <CardHeader>
@@ -75,6 +75,6 @@ export default async function ApplicationPage({
           </form>
         </CardContent>
       </Card>
-    </div>
+    </main>
   )
 }
