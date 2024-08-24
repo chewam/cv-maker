@@ -1,6 +1,7 @@
 import { GeistSans } from "geist/font/sans"
 import "./globals.css"
 import BackgroundEffect from "@/components/BackgroundEffect"
+import { Analytics } from "@vercel/analytics/react"
 
 export const metadata = {
   title: "Your App Name",
@@ -18,6 +19,7 @@ export default function RootLayout({
         <div className="min-h-screen flex flex-col items-center relative isolate">
           <BackgroundEffect />
           {children}
+          <Analytics />
         </div>
       </body>
     </html>
