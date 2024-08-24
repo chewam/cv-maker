@@ -16,6 +16,7 @@ export default async function DashboardPage() {
   const { data: applications, error } = await supabase
     .from("applications")
     .select("*")
+    .eq("owner", user.id)
 
   if (error) {
     console.error("Error fetching applications:", error)

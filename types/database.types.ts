@@ -14,6 +14,7 @@ export type Database = {
           created_at: string
           description: string | null
           id: number
+          owner: string | null
           title: string | null
           updated_at: string | null
         }
@@ -21,6 +22,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           id?: number
+          owner?: string | null
           title?: string | null
           updated_at?: string | null
         }
@@ -28,10 +30,19 @@ export type Database = {
           created_at?: string
           description?: string | null
           id?: number
+          owner?: string | null
           title?: string | null
           updated_at?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "applications_owner_fkey"
+            columns: ["owner"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
