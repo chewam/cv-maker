@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button"
 import { createClient } from "@/utils/supabase/server"
 import AuthButton from "@/components/AuthButton"
 import Image from "next/image"
+import Logo from "@/components/logo"
 
 export default async function Index() {
   const supabase = createClient()
@@ -20,13 +21,14 @@ export default async function Index() {
           <div className="flex lg:flex-1">
             <a href="#" className="-m-1.5 p-1.5">
               <span className="sr-only">Your Company</span>
-              <Image
+              {/* <Image
                 width={32}
                 height={38}
                 className="h-8 w-auto"
                 src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
                 alt="company logo"
-              />
+              /> */}
+              <Logo />
             </a>
           </div>
           <div className="flex lg:hidden">
@@ -96,12 +98,12 @@ export default async function Index() {
           </div>
           <div className="text-center">
             <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">
-              Data to enrich your online business
+              Votre CV parfait, adapté à chaque offre d&apos;emploi
             </h1>
             <p className="mt-6 text-lg leading-8 text-gray-600">
-              Anim aute id magna aliqua ad ad non deserunt sunt. Qui irure qui
-              lorem cupidatat commodo. Elit sunt amet fugiat veniam occaecat
-              fugiat aliqua.
+              Créez, éditez, et personnalisez votre CV pour maximiser vos
+              chances de succès. Adaptez votre CV à chaque opportunité
+              d&apos;emploi avec l&apos;aide de notre IA.
             </p>
             <div className="mt-10 flex items-center justify-center gap-x-6">
               {user ? (
