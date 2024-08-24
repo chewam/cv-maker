@@ -67,35 +67,29 @@
     @apply bg-background text-foreground;
   }
 
-  /* Logo.module.css */
+  /* logo styles */
 
   .logo-container {
     position: relative;
-    width: 100px; /* Ajuster selon les besoins */
-    height: 100px; /* Ajuster selon les besoins */
-  }
-
-  .logo-star, .logo-smallStar {
-    position: absolute;
-    background-color: black;
-    clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+    width: 67px; /* Ajustez en fonction de vos besoins */
+    height: 51px; /* Ajustez en fonction de vos besoins */
   }
 
   .logo-star {
-    width: 50px;
-    height: 50px;
-    animation: float 2s infinite ease-in-out;
+    position: absolute;
+    top: 0;
+    left: 0;
+    animation: logo-float 2s infinite ease-in-out;
   }
 
   .logo-smallStar {
-    width: 25px;
-    height: 25px;
+    position: absolute;
     top: 25px;
     left: 40px;
-    animation: float 3s infinite ease-in-out alternate;
+    animation: logo-float 3s infinite ease-in-out alternate;
   }
 
-  @keyframes float {
+  @keyframes logo-float {
     0%, 100% {
       transform: scale(1);
     }
@@ -103,5 +97,4 @@
       transform: scale(1.1);
     }
   }
-
 }

@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button"
 import { createClient } from "@/utils/supabase/server"
 import AuthButton from "@/components/AuthButton"
-import Image from "next/image"
 import Logo from "@/components/logo"
 
 export default async function Index() {
@@ -18,16 +17,9 @@ export default async function Index() {
           className="flex items-center justify-between p-6 lg:px-8"
           aria-label="Global"
         >
-          <div className="flex lg:flex-1">
+          <div className="flex flex-col lg:flex-1">
             <a href="#" className="-m-1.5 p-1.5">
-              <span className="sr-only">Your Company</span>
-              {/* <Image
-                width={32}
-                height={38}
-                className="h-8 w-auto"
-                src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
-                alt="company logo"
-              /> */}
+              <span className="sr-only">CV Maker</span>
               <Logo />
             </a>
           </div>
@@ -58,25 +50,25 @@ export default async function Index() {
               href="#"
               className="text-sm font-semibold leading-6 text-gray-900"
             >
-              Product
+              Produit
             </a>
             <a
               href="#"
               className="text-sm font-semibold leading-6 text-gray-900"
             >
-              Features
+              Témoignages
             </a>
             <a
               href="#"
               className="text-sm font-semibold leading-6 text-gray-900"
             >
-              Marketplace
+              Comment ca marche ?
             </a>
             <a
               href="#"
               className="text-sm font-semibold leading-6 text-gray-900"
             >
-              Company
+              Découvrez nos plans
             </a>
           </div>
           <div className="hidden lg:flex lg:flex-1 lg:justify-end">
@@ -112,14 +104,14 @@ export default async function Index() {
                 </Button>
               ) : (
                 <Button asChild>
-                  <a href="/login">Get started</a>
+                  <a href="/login">Commencez maintenant</a>
                 </Button>
               )}
               <a
                 href="#"
                 className="text-sm font-semibold leading-6 text-gray-900"
               >
-                Learn more <span aria-hidden="true">→</span>
+                En savoir plus <span aria-hidden="true">→</span>
               </a>
             </div>
           </div>
