@@ -3,6 +3,8 @@ import { redirect } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
+import ExperienceManager from "@/components/ExperienceManager"
+import LinkManager from "@/components/LinkManager"
 
 export default async function ProfilePage() {
   const supabase = createClient()
@@ -22,7 +24,12 @@ export default async function ProfilePage() {
     .single()
 
   if (error) {
-    console.error("Error fetching applications:", error)
+    console.error("Error fetching profile:", error)
+    return <div>Error loading profile</div>
+  }
+
+  if (!profile) {
+    return <div>Profile not found</div>
   }
 
   return (
@@ -51,29 +58,29 @@ export default async function ProfilePage() {
             </div>
             <div>
               <label
-                htmlFor="name"
+                htmlFor="firstname"
                 className="block text-sm font-medium text-gray-700"
               >
                 Firstname
               </label>
               <Input
                 type="text"
-                id="name"
-                name="name"
+                id="firstname"
+                name="firstname"
                 defaultValue={profile?.firstname || ""}
               />
             </div>
             <div>
               <label
-                htmlFor="name"
+                htmlFor="lastname"
                 className="block text-sm font-medium text-gray-700"
               >
                 Lastname
               </label>
               <Input
                 type="text"
-                id="name"
-                name="name"
+                id="lastname"
+                name="lastname"
                 defaultValue={profile?.lastname || ""}
               />
             </div>
@@ -81,6 +88,9 @@ export default async function ProfilePage() {
           </form>
         </CardContent>
       </Card>
+
+      <ExperienceManager profileId={profile.id} />
+      <LinkManager profileId={profile.id} />
     </main>
   )
 }
