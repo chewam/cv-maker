@@ -15,6 +15,7 @@ export type Database = {
           description: string | null
           id: number
           owner: string | null
+          text: string | null
           title: string | null
           updated_at: string | null
         }
@@ -23,6 +24,7 @@ export type Database = {
           description?: string | null
           id?: number
           owner?: string | null
+          text?: string | null
           title?: string | null
           updated_at?: string | null
         }
@@ -31,6 +33,7 @@ export type Database = {
           description?: string | null
           id?: number
           owner?: string | null
+          text?: string | null
           title?: string | null
           updated_at?: string | null
         }

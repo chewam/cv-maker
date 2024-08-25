@@ -1,9 +1,6 @@
 import { createClient } from "@/utils/supabase/server"
 import { redirect } from "next/navigation"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { Button } from "@/components/ui/button"
+import ApplicationForm from "./components/application-form"
 
 export default async function ApplicationPage({
   params,
@@ -35,48 +32,5 @@ export default async function ApplicationPage({
     return <div>Application not found</div>
   }
 
-  return (
-    <main className="space-y-6">
-      <h1 className="text-3xl font-bold">Edit Application</h1>
-      <Card>
-        <CardHeader>
-          <CardTitle>{application.title}</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <form className="space-y-4">
-            <div>
-              <label
-                htmlFor="title"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Title
-              </label>
-              <Input
-                type="text"
-                id="title"
-                name="title"
-                defaultValue={application.title}
-              />
-            </div>
-            <div>
-              <label
-                htmlFor="description"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Description
-              </label>
-              <Textarea
-                id="description"
-                name="description"
-                defaultValue={application.description}
-              />
-            </div>
-            <Button size="sm" type="submit">
-              Update Application
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
-    </main>
-  )
+  return <ApplicationForm application={application} />
 }
