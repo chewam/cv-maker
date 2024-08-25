@@ -30,9 +30,9 @@ export default function RootLayout({
             <Header />
             {children}
             <Footer />
-            <Analytics />
           </div>
         </ThemeProvider>
+        <Analytics />
       </body>
     </html>
   )
