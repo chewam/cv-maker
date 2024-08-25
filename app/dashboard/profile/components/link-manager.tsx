@@ -1,110 +1,154 @@
 "use client"
 
 import React, { useState, useEffect, useCallback } from "react"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import * as z from "zod"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { createClient } from "@/utils/supabase/client"
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form"
+import { useToast } from "@/components/ui/use-toast"
 import { Database } from "@/types/database.types"
-import { FilePenLine, Plus, Trash2 } from "lucide-react"
+import { FilePenLine, Plus, Save, Trash2, Undo2 } from "lucide-react"
+import { fetchLinks, saveLink, deleteLink } from "../actions/link-manager"
 
 type Link = Database["public"]["Tables"]["links"]["Row"]
 
+const linkSchema = z.object({
+  url: z.string().url({ message: "Please enter a valid URL" }),
+  description: z.string().min(1, { message: "Description is required" }),
+})
+
+type LinkFormValues = z.infer<typeof linkSchema>
+
 const LinkManager: React.FC<{ profileId: number }> = ({ profileId }) => {
   const [links, setLinks] = useState<Link[]>([])
-  const [editingLink, setEditingLink] = useState<Link | null>(null)
+  const [editingLinkId, setEditingLinkId] = useState<number | null>(null)
   const [isAdding, setIsAdding] = useState(false)
-  const supabase = createClient()
+  const { toast } = useToast()
 
-  const fetchLinks = useCallback(async () => {
-    const { data, error } = await supabase
-      .from("links")
-      .select("*")
-      .eq("profile", profileId)
-    if (error) {
-      console.error("Error fetching links:", error)
-    } else {
-      setLinks(data || [])
+  const form = useForm<LinkFormValues>({
+    resolver: zodResolver(linkSchema),
+    defaultValues: {
+      url: "",
+      description: "",
+    },
+  })
+
+  const loadLinks = useCallback(async () => {
+    try {
+      const fetchedLinks = await fetchLinks(profileId)
+      setLinks(fetchedLinks)
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to load links",
+        variant: "destructive",
+      })
     }
-  }, [supabase, profileId])
+  }, [profileId, toast])
 
   useEffect(() => {
-    fetchLinks()
-  }, [fetchLinks])
+    loadLinks()
+  }, [loadLinks])
 
-  const handleSave = async (link: Partial<Link>) => {
-    if (editingLink) {
-      const { error } = await supabase
-        .from("links")
-        .update(link)
-        .eq("id", editingLink.id)
-      if (error) {
-        console.error("Error updating link:", error)
-      } else {
-        fetchLinks()
-        setEditingLink(null)
-      }
-    } else {
-      const { error } = await supabase
-        .from("links")
-        .insert({ ...link, profile: profileId })
-      if (error) {
-        console.error("Error adding link:", error)
-      } else {
-        fetchLinks()
-        setIsAdding(false)
-      }
+  const onSubmit = async (values: LinkFormValues) => {
+    try {
+      await saveLink(
+        editingLinkId ? { ...values, id: editingLinkId } : values,
+        profileId,
+      )
+      await loadLinks()
+      setEditingLinkId(null)
+      setIsAdding(false)
+      form.reset()
+      toast({
+        title: "Success",
+        description: editingLinkId ? "Link updated" : "Link added",
+      })
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to save link",
+        variant: "destructive",
+      })
     }
   }
 
   const handleDelete = async (id: number) => {
-    const { error } = await supabase.from("links").delete().eq("id", id)
-    if (error) {
-      console.error("Error deleting link:", error)
-    } else {
-      fetchLinks()
+    try {
+      await deleteLink(id)
+      await loadLinks()
+      toast({
+        title: "Success",
+        description: "Link deleted",
+      })
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to delete link",
+        variant: "destructive",
+      })
     }
   }
 
-  const LinkForm = ({
-    link,
-    onSave,
-    onCancel,
-  }: {
-    link: Partial<Link>
-    onSave: (link: Partial<Link>) => void
-    onCancel: () => void
-  }) => {
-    const [formData, setFormData] = useState(link)
-
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      const { name, value } = e.target
-      setFormData((prev) => ({ ...prev, [name]: value }))
-    }
-
-    return (
-      <div className="space-y-2">
-        <Input
+  const LinkForm = () => (
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <FormField
+          control={form.control}
           name="url"
-          value={formData.url || ""}
-          onChange={handleChange}
-          placeholder="URL"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>URL</FormLabel>
+              <FormControl>
+                <Input {...field} placeholder="https://example.com" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
         />
-        <Input
+        <FormField
+          control={form.control}
           name="description"
-          value={formData.description || ""}
-          onChange={handleChange}
-          placeholder="Description (e.g., LinkedIn, GitHub)"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Description</FormLabel>
+              <FormControl>
+                <Input {...field} placeholder="e.g., LinkedIn, GitHub" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
         />
-        <Button size="sm" onClick={() => onSave(formData)}>
-          Save
-        </Button>
-        <Button size="sm" onClick={onCancel} variant="outline">
-          Cancel
-        </Button>
-      </div>
-    )
-  }
+        <div className="flex justify-between">
+          <Button type="submit" size="sm">
+            <Save className="h-4 w-4 mr-2" /> Enregistrer
+          </Button>
+          <Button
+            size="sm"
+            type="button"
+            variant="outline"
+            onClick={() => {
+              setEditingLinkId(null)
+              setIsAdding(false)
+              form.reset()
+            }}
+          >
+            <Undo2 className="h-4 w-4 mr-2" /> Cancel
+          </Button>
+        </div>
+      </form>
+    </Form>
+  )
 
   return (
     <Card>
@@ -115,12 +159,8 @@ const LinkManager: React.FC<{ profileId: number }> = ({ profileId }) => {
         <div className="space-y-4">
           {links.map((link) => (
             <div key={link.id} className="p-2 border rounded">
-              {editingLink?.id === link.id ? (
-                <LinkForm
-                  link={editingLink}
-                  onSave={handleSave}
-                  onCancel={() => setEditingLink(null)}
-                />
+              {editingLinkId === link.id ? (
+                <LinkForm />
               ) : (
                 <div className="flex items-center">
                   <div className="flex-1">
@@ -130,7 +170,13 @@ const LinkManager: React.FC<{ profileId: number }> = ({ profileId }) => {
                   <div>
                     <Button
                       variant="secondary"
-                      onClick={() => setEditingLink(link)}
+                      onClick={() => {
+                        setEditingLinkId(link.id)
+                        form.reset({
+                          url: link.url,
+                          description: link.description || "",
+                        })
+                      }}
                     >
                       <FilePenLine className="h-4 w-4 mr-2" />
                       Editer
@@ -149,11 +195,7 @@ const LinkManager: React.FC<{ profileId: number }> = ({ profileId }) => {
             </div>
           ))}
           {isAdding ? (
-            <LinkForm
-              link={{}}
-              onSave={handleSave}
-              onCancel={() => setIsAdding(false)}
-            />
+            <LinkForm />
           ) : (
             <Button size="sm" onClick={() => setIsAdding(true)}>
               <Plus className="h-4 w-4 mr-2" /> Ajouter un lien
