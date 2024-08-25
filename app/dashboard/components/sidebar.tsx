@@ -1,26 +1,19 @@
+"use client"
+
+import { usePathname } from "next/navigation"
 import Link from "next/link"
-import { User } from "@supabase/supabase-js"
 import { Button } from "@/components/ui/button"
-import { createClient } from "@/utils/supabase/server"
+import { Database } from "@/types/database.types"
+import { cn } from "@/lib/utils"
 
-export default async function Sidebar({
-  user,
-  selectedApplicationId,
+type Application = Database["public"]["Tables"]["applications"]["Row"]
+
+export default function Sidebar({
+  applications,
 }: {
-  user: User
-  selectedApplicationId?: string
+  applications: Application[]
 }) {
-  const supabase = createClient()
-
-  const { data: applications, error } = await supabase
-    .from("applications")
-    .select("id, title")
-    .eq("owner", user.id)
-
-  if (error) {
-    console.error("Error fetching applications:", error)
-  }
-
+  const pathname = usePathname()
   return (
     <div className="w-64 border-r border-foreground/10">
       <nav className="p-4 space-y-4">
@@ -35,21 +28,25 @@ export default async function Sidebar({
             Applications
           </h3>
           <div className="grid gap-1 px-2">
-            {applications?.map((app) => (
-              <Button
-                asChild
-                size="sm"
-                key={app.id}
-                className="justify-start"
-                variant={
-                  Number(selectedApplicationId) === app.id ? "default" : "ghost"
-                }
-              >
-                <Link href={`/dashboard/application/${app.id}`}>
-                  {app.title}
-                </Link>
-              </Button>
-            ))}
+            {applications.map((app) => {
+              const href = `/dashboard/application/${app.id}`
+              return (
+                <Button
+                  asChild
+                  size="sm"
+                  key={app.id}
+                  className={cn(
+                    "justify-start",
+                    pathname === href
+                      ? "bg-muted hover:bg-muted"
+                      : "hover:bg-transparent hover:underline",
+                  )}
+                  variant="ghost"
+                >
+                  <Link href={href}>{app.title}</Link>
+                </Button>
+              )
+            })}
           </div>
         </div>
       </nav>
