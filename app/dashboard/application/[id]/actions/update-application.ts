@@ -9,7 +9,6 @@ export async function updateApplication(formData: {
   description: string
   text: string
 }) {
-  console.log("updateApplication called with formData:", formData)
   const supabase = createClient()
 
   try {
@@ -27,7 +26,6 @@ export async function updateApplication(formData: {
       throw new Error("Error updating application")
     }
 
-    console.log("Application updated successfully:", data)
     revalidatePath("/applications")
     return data
   } catch (error) {

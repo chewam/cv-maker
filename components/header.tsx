@@ -42,7 +42,7 @@ export default async function Header() {
           </button>
         </div>
         {!user ? (
-          <div className="hidden lg:flex lg:gap-x-12">
+          <div className="hidden lg:flex lg:flex-1 lg:gap-x-12 lg:justify-center">
             <a
               href="#"
               className="text-sm font-semibold leading-6 text-gray-900"
@@ -71,7 +71,7 @@ export default async function Header() {
         ) : (
           <></>
         )}
-        <div className="hidden lg:flex lg:flex-1 lg:justify-end">
+        <div className="hidden lg:flex lg:justify-end">
           <AuthButton />
           <div className="w-4"></div>
           <ModeToggle />
