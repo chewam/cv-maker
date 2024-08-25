@@ -1,6 +1,7 @@
 import { createClient } from "@/utils/supabase/server"
 import { redirect } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import Sidebar from "./components/sidebar"
 
 export default async function DashboardPage() {
   const supabase = createClient()
@@ -23,28 +24,33 @@ export default async function DashboardPage() {
   }
 
   return (
-    <main className="animate-in flex-1 flex flex-col gap-6">
-      <h1 className="text-3xl font-bold">Dashboard</h1>
-      <h2 className="text-xl font-semibold">Your Applications</h2>
-      {applications && applications.length > 0 ? (
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {applications.map((app) => (
-            <Card key={app.id}>
-              <CardHeader>
-                <CardTitle>{app.title}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p>{app.description}</p>
-                <p className="text-sm text-muted-foreground mt-2">
-                  Created: {new Date(app.created_at).toLocaleDateString()}
-                </p>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      ) : (
-        <p>No applications found.</p>
-      )}
-    </main>
+    <div className="flex flex-1">
+      <Sidebar user={user} />
+      <div className="flex-1 p-6 overflow-auto">
+        <main className="animate-in flex-1 flex flex-col gap-6">
+          <h1 className="text-3xl font-bold">Dashboard</h1>
+          <h2 className="text-xl font-semibold">Your Applications</h2>
+          {applications && applications.length > 0 ? (
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {applications.map((app) => (
+                <Card key={app.id}>
+                  <CardHeader>
+                    <CardTitle>{app.title}</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p>{app.description}</p>
+                    <p className="text-sm text-muted-foreground mt-2">
+                      Created: {new Date(app.created_at).toLocaleDateString()}
+                    </p>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          ) : (
+            <p>No applications found.</p>
+          )}
+        </main>
+      </div>
+    </div>
   )
 }

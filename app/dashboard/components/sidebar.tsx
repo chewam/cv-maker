@@ -3,7 +3,13 @@ import { User } from "@supabase/supabase-js"
 import { Button } from "@/components/ui/button"
 import { createClient } from "@/utils/supabase/server"
 
-export default async function Sidebar({ user }: { user: User }) {
+export default async function Sidebar({
+  user,
+  selectedApplicationId,
+}: {
+  user: User
+  selectedApplicationId?: string
+}) {
   const supabase = createClient()
 
   const { data: applications, error } = await supabase
@@ -31,11 +37,13 @@ export default async function Sidebar({ user }: { user: User }) {
           <div className="grid gap-1 px-2">
             {applications?.map((app) => (
               <Button
-                key={app.id}
-                variant="ghost"
-                size="sm"
                 asChild
+                size="sm"
+                key={app.id}
                 className="justify-start"
+                variant={
+                  Number(selectedApplicationId) === app.id ? "default" : "ghost"
+                }
               >
                 <Link href={`/dashboard/application/${app.id}`}>
                   {app.title}
