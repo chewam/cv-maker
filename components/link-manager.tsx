@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { createClient } from "@/utils/supabase/client"
 import { Database } from "@/types/database.types"
+import { FilePenLine, Plus, Trash2 } from "lucide-react"
 
 type Link = Database["public"]["Tables"]["links"]["Row"]
 
@@ -121,20 +122,29 @@ const LinkManager: React.FC<{ profileId: number }> = ({ profileId }) => {
                   onCancel={() => setEditingLink(null)}
                 />
               ) : (
-                <>
-                  <h3 className="font-bold">{link.description}</h3>
-                  <p>{link.url}</p>
-                  <Button size="sm" onClick={() => setEditingLink(link)}>
-                    Edit
-                  </Button>
-                  <Button
-                    size="sm"
-                    onClick={() => handleDelete(link.id)}
-                    variant="destructive"
-                  >
-                    Delete
-                  </Button>
-                </>
+                <div className="flex items-center">
+                  <div className="flex-1">
+                    <h3 className="font-bold">{link.description}</h3>
+                    <p>{link.url}</p>
+                  </div>
+                  <div>
+                    <Button
+                      variant="secondary"
+                      onClick={() => setEditingLink(link)}
+                    >
+                      <FilePenLine className="h-4 w-4 mr-2" />
+                      Editer
+                    </Button>
+                    <Button
+                      size="icon"
+                      className="ml-2"
+                      onClick={() => handleDelete(link.id)}
+                      variant="outline"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
               )}
             </div>
           ))}
@@ -146,7 +156,7 @@ const LinkManager: React.FC<{ profileId: number }> = ({ profileId }) => {
             />
           ) : (
             <Button size="sm" onClick={() => setIsAdding(true)}>
-              Add Link
+              <Plus className="h-4 w-4 mr-2" /> Ajouter un lien
             </Button>
           )}
         </div>

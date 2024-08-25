@@ -15,6 +15,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
+import { FilePenLine, Plus, Save, Trash2, Undo2 } from "lucide-react"
 
 type Experience = Database["public"]["Tables"]["experiences"]["Row"]
 
@@ -184,11 +185,11 @@ const ExperienceManager: React.FC<{ profileId: number }> = ({ profileId }) => {
             name="end_date"
           />
         </div>
-        <Button size="sm" onClick={() => onSave(formData)}>
-          Save
-        </Button>
         <Button size="sm" onClick={onCancel} variant="outline">
-          Cancel
+          <Undo2 className="h-4 w-4 mr-2" /> Cancel
+        </Button>
+        <Button size="sm" onClick={() => onSave(formData)}>
+          <Save className="h-4 w-4 mr-2" /> Enregistrer
         </Button>
       </div>
     )
@@ -210,31 +211,36 @@ const ExperienceManager: React.FC<{ profileId: number }> = ({ profileId }) => {
                   onCancel={() => setEditingExperience(null)}
                 />
               ) : (
-                <>
-                  <h3 className="font-bold">
-                    {experience.role} at {experience.company}
-                  </h3>
-                  <p>{experience.location}</p>
-                  <p>
-                    {format(new Date(experience.start_date), "PPP")} -{" "}
-                    {experience.end_date
-                      ? format(new Date(experience.end_date), "PPP")
-                      : "Present"}
-                  </p>
-                  <Button
-                    size="sm"
-                    onClick={() => setEditingExperience(experience)}
-                  >
-                    Edit
-                  </Button>
-                  <Button
-                    size="sm"
-                    onClick={() => handleDelete(experience.id)}
-                    variant="destructive"
-                  >
-                    Delete
-                  </Button>
-                </>
+                <div className="flex items-center">
+                  <div className="flex-1">
+                    <h3 className="font-bold">
+                      {experience.role} at {experience.company}
+                    </h3>
+                    <p>{experience.location}</p>
+                    <p>
+                      {format(new Date(experience.start_date), "PPP")} -{" "}
+                      {experience.end_date
+                        ? format(new Date(experience.end_date), "PPP")
+                        : "Present"}
+                    </p>
+                  </div>
+                  <div>
+                    <Button
+                      variant="secondary"
+                      onClick={() => setEditingExperience(experience)}
+                    >
+                      <FilePenLine className="h-4 w-4 mr-2" /> Editer
+                    </Button>
+                    <Button
+                      size="icon"
+                      className="ml-2"
+                      onClick={() => handleDelete(experience.id)}
+                      variant="outline"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
               )}
             </div>
           ))}
@@ -246,7 +252,7 @@ const ExperienceManager: React.FC<{ profileId: number }> = ({ profileId }) => {
             />
           ) : (
             <Button size="sm" onClick={() => setIsAdding(true)}>
-              Add Experience
+              <Plus className="h-4 w-4 mr-2" /> Ajouter une expérience
             </Button>
           )}
         </div>
