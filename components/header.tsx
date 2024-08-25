@@ -1,6 +1,7 @@
 import Logo from "./logo"
 import AuthButton from "./auth-button"
 import { createClient } from "@/utils/supabase/server"
+import { ModeToggle } from "./mode-toggle"
 
 export default async function Header() {
   const supabase = createClient()
@@ -72,6 +73,8 @@ export default async function Header() {
         )}
         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
           <AuthButton />
+          <div className="w-4"></div>
+          <ModeToggle />
         </div>
       </nav>
     </header>

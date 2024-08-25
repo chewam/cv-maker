@@ -4,6 +4,7 @@ import BackgroundEffect from "@/components/background-effect"
 import { Analytics } from "@vercel/analytics/react"
 import Header from "@/components/header"
 import Footer from "@/components/footer"
+import { ThemeProvider } from "@/components/theme-provider"
 
 export const metadata = {
   title: "Your App Name",
@@ -18,13 +19,20 @@ export default function RootLayout({
   return (
     <html lang="en" className={GeistSans.className}>
       <body className="bg-background text-foreground">
-        <div className="min-h-screen flex flex-col items-center relative isolate">
-          <BackgroundEffect />
-          <Header />
-          {children}
-          <Footer />
-          <Analytics />
-        </div>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <div className="min-h-screen flex flex-col items-center relative isolate">
+            <BackgroundEffect />
+            <Header />
+            {children}
+            <Footer />
+            <Analytics />
+          </div>
+        </ThemeProvider>
       </body>
     </html>
   )

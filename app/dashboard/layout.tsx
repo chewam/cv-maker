@@ -17,19 +17,10 @@ export default async function DashboardLayout({
     return redirect("/login")
   }
 
-  const { data: applications, error } = await supabase
-    .from("applications")
-    .select("id, title")
-    .eq("owner", user.id)
-
-  if (error) {
-    console.error("Error fetching applications:", error)
-  }
-
   return (
     <div className="flex-1 pt-24 w-full flex flex-col relative isolate">
       <div className="flex flex-1">
-        <Sidebar user={user} applications={applications || []} />
+        <Sidebar user={user} />
         <div className="flex-1 p-6 overflow-auto">{children}</div>
       </div>
     </div>
