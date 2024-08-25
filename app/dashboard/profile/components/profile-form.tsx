@@ -4,7 +4,13 @@ import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import {
@@ -21,6 +27,7 @@ import { Database } from "@/types/database.types"
 import { updateProfile } from "../actions/update-profile"
 
 import type { User } from "@supabase/supabase-js"
+import { Save } from "lucide-react"
 type Profile = Database["public"]["Tables"]["profiles"]["Row"]
 
 const formSchema = z.object({
@@ -79,6 +86,9 @@ export default function ProfileForm({
     <Card>
       <CardHeader>
         <CardTitle>Edit Profile</CardTitle>
+        <CardDescription>
+          Les informations concernant votre identité
+        </CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
@@ -123,8 +133,9 @@ export default function ProfileForm({
                 </FormItem>
               )}
             />
-            <Button type="submit" disabled={isLoading}>
-              {isLoading ? "Updating..." : "Update Profile"}
+            <Button size="sm" type="submit" disabled={isLoading}>
+              <Save className="h-4 w-4 mr-2" />{" "}
+              {isLoading ? "Mise à jour..." : "Enregistrer"}
             </Button>
           </form>
         </Form>

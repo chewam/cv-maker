@@ -4,7 +4,13 @@ import React, { useState, useEffect, useCallback } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import {
@@ -153,7 +159,10 @@ const LinkManager: React.FC<{ profileId: number }> = ({ profileId }) => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Links</CardTitle>
+        <CardTitle>Liens</CardTitle>
+        <CardDescription>
+          Liens vers votre site web ou vos profils sur les réseaux sociaux
+        </CardDescription>
       </CardHeader>
       <CardContent>
         <div className="space-y-4">

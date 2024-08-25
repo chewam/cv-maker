@@ -1,11 +1,28 @@
 "use client"
 
 import React, { useState, useEffect, useCallback } from "react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import * as z from "zod"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form"
+import { useToast } from "@/components/ui/use-toast"
 import { Database } from "@/types/database.types"
-import { createClient } from "@/utils/supabase/client"
 import { CalendarIcon } from "@radix-ui/react-icons"
 import { format } from "date-fns"
 import { cn } from "@/lib/utils"
@@ -16,200 +33,243 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 import { FilePenLine, Plus, Save, Trash2, Undo2 } from "lucide-react"
+import {
+  fetchExperiences,
+  saveExperience,
+  deleteExperience,
+} from "../actions/experience-manager"
 
 type Experience = Database["public"]["Tables"]["experiences"]["Row"]
 
+const experienceSchema = z.object({
+  company: z.string().min(1, { message: "Company is required" }),
+  role: z.string().min(1, { message: "Role is required" }),
+  location: z.string().min(1, { message: "Location is required" }),
+  start_date: z.string().min(1, { message: "Start date is required" }),
+  end_date: z.string().nullable(),
+})
+
+type ExperienceFormValues = z.infer<typeof experienceSchema>
+
 const ExperienceManager: React.FC<{ profileId: number }> = ({ profileId }) => {
   const [experiences, setExperiences] = useState<Experience[]>([])
-  const [editingExperience, setEditingExperience] = useState<Experience | null>(
+  const [editingExperienceId, setEditingExperienceId] = useState<number | null>(
     null,
   )
   const [isAdding, setIsAdding] = useState(false)
-  const supabase = createClient()
+  const { toast } = useToast()
 
-  const fetchExperiences = useCallback(async () => {
-    const { data, error } = await supabase
-      .from("experiences")
-      .select("*")
-      .eq("profile", profileId)
-      .order("start_date", { ascending: false })
-    if (error) {
-      console.error("Error fetching experiences:", error)
-    } else {
-      setExperiences(data || [])
+  const form = useForm<ExperienceFormValues>({
+    resolver: zodResolver(experienceSchema),
+    defaultValues: {
+      company: "",
+      role: "",
+      location: "",
+      start_date: "",
+      end_date: null,
+    },
+  })
+
+  const loadExperiences = useCallback(async () => {
+    try {
+      const fetchedExperiences = await fetchExperiences(profileId)
+      setExperiences(fetchedExperiences)
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to load experiences",
+        variant: "destructive",
+      })
     }
-  }, [profileId, supabase])
+  }, [profileId, toast])
 
   useEffect(() => {
-    fetchExperiences()
-  }, [fetchExperiences])
+    loadExperiences()
+  }, [loadExperiences])
 
-  const handleSave = async (experience: Partial<Experience>) => {
-    if (editingExperience) {
-      const { error } = await supabase
-        .from("experiences")
-        .update(experience)
-        .eq("id", editingExperience.id)
-      if (error) {
-        console.error("Error updating experience:", error)
-      } else {
-        fetchExperiences()
-        setEditingExperience(null)
-      }
-    } else {
-      const { error } = await supabase
-        .from("experiences")
-        .insert({ ...experience, profile: profileId })
-      if (error) {
-        console.error("Error adding experience:", error)
-      } else {
-        fetchExperiences()
-        setIsAdding(false)
-      }
+  const onSubmit = async (values: ExperienceFormValues) => {
+    try {
+      await saveExperience(
+        editingExperienceId ? { ...values, id: editingExperienceId } : values,
+        profileId,
+      )
+      await loadExperiences()
+      setEditingExperienceId(null)
+      setIsAdding(false)
+      form.reset()
+      toast({
+        title: "Success",
+        description: editingExperienceId
+          ? "Experience updated"
+          : "Experience added",
+      })
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to save experience",
+        variant: "destructive",
+      })
     }
   }
 
   const handleDelete = async (id: number) => {
-    const { error } = await supabase.from("experiences").delete().eq("id", id)
-    if (error) {
-      console.error("Error deleting experience:", error)
-    } else {
-      fetchExperiences()
+    try {
+      await deleteExperience(id)
+      await loadExperiences()
+      toast({
+        title: "Success",
+        description: "Experience deleted",
+      })
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to delete experience",
+        variant: "destructive",
+      })
     }
   }
 
-  const DatePicker = ({
-    date,
-    onChange,
-    name,
-  }: {
-    date: string | null
-    onChange: (date: string | null) => void
-    name: string
-  }) => (
-    <Popover>
-      <PopoverTrigger asChild>
-        <Button
-          size="sm"
-          id={name}
-          name={name}
-          variant={"outline"}
-          className={cn(
-            "w-[240px] justify-start text-left font-normal",
-            !date && "text-muted-foreground",
-          )}
-        >
-          <CalendarIcon className="mr-2 h-4 w-4" />
-          {date ? format(new Date(date), "PPP") : <span>Pick a date</span>}
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-auto p-0" align="start">
-        <Calendar
-          mode="single"
-          selected={date ? new Date(date) : undefined}
-          onSelect={(newDate) =>
-            onChange(newDate ? newDate.toISOString() : null)
-          }
-          initialFocus
-        />
-      </PopoverContent>
-    </Popover>
-  )
-
-  const ExperienceForm = ({
-    experience,
-    onSave,
-    onCancel,
-  }: {
-    experience: Partial<Experience>
-    onSave: (experience: Partial<Experience>) => void
-    onCancel: () => void
-  }) => {
-    const [formData, setFormData] = useState(experience)
-
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      const { name, value } = e.target
-      setFormData((prev) => ({ ...prev, [name]: value }))
+  const DatePicker = React.forwardRef<
+    HTMLDivElement,
+    {
+      value?: string
+      onChange: (date: string | undefined) => void
     }
+  >(({ value, onChange }, ref) => (
+    <div ref={ref}>
+      <Popover>
+        <PopoverTrigger asChild>
+          <Button
+            variant={"outline"}
+            className={cn(
+              "w-full justify-start text-left font-normal",
+              !value && "text-muted-foreground",
+            )}
+          >
+            <CalendarIcon className="mr-2 h-4 w-4" />
+            {value ? format(new Date(value), "PPP") : <span>Pick a date</span>}
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="w-auto p-0" align="start">
+          <Calendar
+            mode="single"
+            selected={value ? new Date(value) : undefined}
+            onSelect={(newDate) =>
+              onChange(newDate ? newDate.toISOString() : undefined)
+            }
+            initialFocus
+          />
+        </PopoverContent>
+      </Popover>
+    </div>
+  ))
+  DatePicker.displayName = "DatePicker"
 
-    const handleDateChange = (name: string) => (date: string | null) => {
-      setFormData((prev) => ({ ...prev, [name]: date }))
-    }
-
-    return (
-      <div className="space-y-2">
-        <Input
-          id="company"
+  const ExperienceForm = () => (
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <FormField
+          control={form.control}
           name="company"
-          value={formData.company || ""}
-          onChange={handleChange}
-          placeholder="Company"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Company</FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
         />
-        <Input
-          id="role"
+        <FormField
+          control={form.control}
           name="role"
-          value={formData.role || ""}
-          onChange={handleChange}
-          placeholder="Role"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Role</FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
         />
-        <Input
-          id="location"
+        <FormField
+          control={form.control}
           name="location"
-          value={formData.location || ""}
-          onChange={handleChange}
-          placeholder="Location"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Location</FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
         />
-        <div>
-          <label
-            htmlFor="start_date"
-            className="block text-sm font-medium text-gray-700"
+        <FormField
+          control={form.control}
+          name="start_date"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Start Date</FormLabel>
+              <FormControl>
+                <DatePicker value={field.value} onChange={field.onChange} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="end_date"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>End Date</FormLabel>
+              <FormControl>
+                <DatePicker
+                  value={field.value || undefined}
+                  onChange={field.onChange}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <div className="flex justify-between">
+          <Button type="submit">
+            <Save className="h-4 w-4 mr-2" /> Enregistrer
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => {
+              setEditingExperienceId(null)
+              setIsAdding(false)
+              form.reset()
+            }}
           >
-            Start Date
-          </label>
-          <DatePicker
-            date={formData.start_date || null}
-            onChange={handleDateChange("start_date")}
-            name="start_date"
-          />
+            <Undo2 className="h-4 w-4 mr-2" /> Cancel
+          </Button>
         </div>
-        <div>
-          <label
-            htmlFor="end_date"
-            className="block text-sm font-medium text-gray-700"
-          >
-            End Date
-          </label>
-          <DatePicker
-            date={formData.end_date || null}
-            onChange={handleDateChange("end_date")}
-            name="end_date"
-          />
-        </div>
-        <Button size="sm" onClick={onCancel} variant="outline">
-          <Undo2 className="h-4 w-4 mr-2" /> Cancel
-        </Button>
-        <Button size="sm" onClick={() => onSave(formData)}>
-          <Save className="h-4 w-4 mr-2" /> Enregistrer
-        </Button>
-      </div>
-    )
-  }
+      </form>
+    </Form>
+  )
 
   return (
     <Card>
       <CardHeader>
         <CardTitle>Experiences</CardTitle>
+        <CardDescription>
+          L&apos;ensemble de vos expériences professionnelles
+        </CardDescription>
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
           {experiences.map((experience) => (
             <div key={experience.id} className="p-2 border rounded">
-              {editingExperience?.id === experience.id ? (
-                <ExperienceForm
-                  experience={editingExperience}
-                  onSave={handleSave}
-                  onCancel={() => setEditingExperience(null)}
-                />
+              {editingExperienceId === experience.id ? (
+                <ExperienceForm />
               ) : (
                 <div className="flex items-center">
                   <div className="flex-1">
@@ -227,7 +287,16 @@ const ExperienceManager: React.FC<{ profileId: number }> = ({ profileId }) => {
                   <div>
                     <Button
                       variant="secondary"
-                      onClick={() => setEditingExperience(experience)}
+                      onClick={() => {
+                        setEditingExperienceId(experience.id)
+                        form.reset({
+                          company: experience.company,
+                          role: experience.role,
+                          location: experience.location,
+                          start_date: experience.start_date,
+                          end_date: experience.end_date,
+                        })
+                      }}
                     >
                       <FilePenLine className="h-4 w-4 mr-2" /> Editer
                     </Button>
@@ -245,11 +314,7 @@ const ExperienceManager: React.FC<{ profileId: number }> = ({ profileId }) => {
             </div>
           ))}
           {isAdding ? (
-            <ExperienceForm
-              experience={{}}
-              onSave={handleSave}
-              onCancel={() => setIsAdding(false)}
-            />
+            <ExperienceForm />
           ) : (
             <Button size="sm" onClick={() => setIsAdding(true)}>
               <Plus className="h-4 w-4 mr-2" /> Ajouter une expérience
